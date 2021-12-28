@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="padding">16dp</dimen>
+    <dimen name="list_mini_width">80dp</dimen>
+    <dimen name="list_mini_height">120dp</dimen>
+    <dimen name="list_mini_container_height">110dp</dimen>
+</resources>

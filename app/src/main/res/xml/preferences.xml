@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        app:key="appearance_category"
+        app:title="@string/settings_appearance">
+
+        <ListPreference
+            app:key="theme"
+            app:title="@string/settings_theme"
+            app:entries="@array/themes"
+            app:entryValues="@array/themes_values" />
+
+        <ListPreference
+            app:key="title_language"
+            android:title="@string/settings_title"
+            app:entries="@array/title_langs"
+            android:defaultValue="romaji"
+            app:entryValues="@array/title_langs_values" />
+    </PreferenceCategory>
+
+</PreferenceScreen>
