@@ -82,7 +82,10 @@ class CustomAdapter(private val mList: List<Channel>, private var mContext: Cont
                 if (entry != null) {
                     mChannelViewModel.delete(entry)
                     try {
-                        Uri.parse(entry.imageUri).toFile().delete()
+                        val uri = Uri.parse(entry.imageUri)
+                        if (uri.scheme == "file") {
+                            uri.toFile().delete()
+                        }
                     } catch (e: FileNotFoundException) { }
                 }
 
