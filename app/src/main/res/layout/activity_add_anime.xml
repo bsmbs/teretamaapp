@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         app:title="@string/anime_add"
-        android:theme="@style/ThemeOverlay.MaterialComponents.Toolbar.Primary"
+        android:theme="@style/SearchViewStyle"
         android:background="?android:attr/statusBarColor"
         android:elevation="?attr/toolbarElevation"
         app:titleTextColor="?attr/colorOnPrimary" />
@@ -32,8 +32,6 @@
         android:gravity="center"
         android:text="@string/anime_results_start"
         android:textSize="16sp" />
-
-
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/anime_results"

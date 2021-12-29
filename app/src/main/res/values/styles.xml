@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="SearchViewStyle" parent="ThemeOverlay.MaterialComponents.Toolbar.Primary">
+        <item name="android:editTextColor">@android:color/white</item>
+    </style>
+</resources>

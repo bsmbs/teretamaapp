@@ -56,6 +56,7 @@
     <string name="item_move">Move</string>
     <string name="anime_move_title">Move item to</string>
     <string name="anime_move_message">Successfully moved to %1$s</string>
+    <string name="anime_cover">Anime cover</string>
     <string-array name="title_langs">
         <item>English (JoJo\'s Bizarre Adventure)</item>
         <item>Romaji (JoJo no Kimyou na Bouken)</item>
