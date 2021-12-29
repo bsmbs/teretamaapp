@@ -17,6 +17,24 @@
         android:elevation="?attr/toolbarElevation"
         app:titleTextColor="?attr/colorOnPrimary" />
 
+    <ProgressBar
+        android:id="@+id/anime_results_loading"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="60dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/anime_results_message"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="@string/anime_results_start"
+        android:textSize="16sp" />
+
+
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/anime_results"
         android:layout_width="match_parent"

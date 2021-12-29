@@ -51,6 +51,8 @@
     <string name="add_success">Added successfully</string>
     <string name="anime_empty">This channel looks empty. Consider adding something.</string>
     <string name="anime_details">%1$d\n%2$s\n%3$d episodes</string>
+    <string name="anime_results_start">Search for something.</string>
+    <string name="anime_results_empty">No results found.</string>
     <string-array name="title_langs">
         <item>English (JoJo\'s Bizarre Adventure)</item>
         <item>Romaji (JoJo no Kimyou na Bouken)</item>

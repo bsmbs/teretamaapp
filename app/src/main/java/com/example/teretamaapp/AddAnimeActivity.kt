@@ -3,6 +3,9 @@ package com.example.teretamaapp
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.Menu
+import android.view.View
+import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -32,6 +35,8 @@ class AddAnimeActivity : AppCompatActivity(), AnimeSearchAdapter.AnimeSearchList
     }
 
     lateinit var list: RecyclerView
+    lateinit var message: TextView
+    lateinit var loading: ProgressBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +54,9 @@ class AddAnimeActivity : AppCompatActivity(), AnimeSearchAdapter.AnimeSearchList
         toolbar.setNavigationOnClickListener {
             onBackPressed()
         }
+
+        message = findViewById(R.id.anime_results_message)
+        loading = findViewById(R.id.anime_results_loading)
 
         // Initialize and configure the RecyclerView
         list = findViewById(R.id.anime_results)
@@ -72,30 +80,48 @@ class AddAnimeActivity : AppCompatActivity(), AnimeSearchAdapter.AnimeSearchList
                 if (query != null && !TextUtils.isEmpty(query)) {
                     val body = AnilistRequest(mediaQuery, AnilistVariables(1, 50, query))
 
+                    // Show progress spinner
+                    loading.visibility = View.VISIBLE
+
                     // Query AniList API
                     // TODO Move it to a different file
-
                     "https://graphql.anilist.co".httpPost()
                         .header(Headers.CONTENT_TYPE, "application/json;charset=utf-8")
                         .jsonBody(Json.encodeToString(body))
                         .responseObject<AnilistResponse>(json = Json { ignoreUnknownKeys = true }) { _, _, result ->
+                            // Hide progress spinner
+                            loading.visibility = View.GONE
+
                             if (result is Result.Success) {
-                                val converted = result.get().data.Page.media.map {
-                                    val title = when (preferredLang) {
-                                        "english" -> it.title.english ?: it.title.romaji
-                                        "native" -> it.title.native ?: it.title.romaji
-                                        else -> it.title.romaji
+                                val results = result.get().data.Page.media
+
+                                if (results.isNotEmpty()) {
+                                    // Hide message container
+                                        message.visibility = View.GONE
+
+                                    val converted = results.map {
+                                        val title = when (preferredLang) {
+                                            "english" -> it.title.english ?: it.title.romaji
+                                            "native" -> it.title.native ?: it.title.romaji
+                                            else -> it.title.romaji
+                                        }
+
+                                        val studiosString = it.studios.nodes
+                                            .filter { node -> node.isAnimationStudio }
+                                            .joinToString { node -> node.name }
+
+                                        Anime(channelId, it.id, title ?: "Unknown", it.coverImage.large, it.startDate.year ?: -1, it.episodes ?: 0, studiosString)
                                     }
 
-                                    val studiosString = it.studios.nodes
-                                        .filter { node -> node.isAnimationStudio }
-                                        .joinToString { node -> node.name }
+                                    val adapter = AnimeSearchAdapter(converted, this@AddAnimeActivity)
+                                    list.adapter = adapter
+                                } else {
+                                    // Show a message that there are no results.
 
-                                    Anime(channelId, it.id, title ?: "Unknown", it.coverImage.large, it.startDate.year ?: -1, it.episodes ?: 0, studiosString)
+                                    message.visibility = View.VISIBLE
+                                    message.text = getString(R.string.anime_results_empty)
                                 }
 
-                                val adapter = AnimeSearchAdapter(converted, this@AddAnimeActivity)
-                                list.adapter = adapter
 
                             } else if (result is Result.Failure) {
                                 // For development (user won't be able to see it anyway)
