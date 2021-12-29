@@ -53,6 +53,9 @@
     <string name="anime_details">%1$d\n%2$s\n%3$d episodes</string>
     <string name="anime_results_start">Search for something.</string>
     <string name="anime_results_empty">No results found.</string>
+    <string name="item_move">Move</string>
+    <string name="anime_move_title">Move item to</string>
+    <string name="anime_move_message">Successfully moved to %1$s</string>
     <string-array name="title_langs">
         <item>English (JoJo\'s Bizarre Adventure)</item>
         <item>Romaji (JoJo no Kimyou na Bouken)</item>

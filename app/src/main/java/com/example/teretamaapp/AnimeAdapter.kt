@@ -1,6 +1,8 @@
 package com.example.teretamaapp
 
+import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.view.ContextMenu
@@ -14,8 +16,9 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.teretamaapp.room.Anime
 import com.example.teretamaapp.room.AnimeViewModel
+import com.example.teretamaapp.room.Channel
 
-class AnimeAdapter(private val mList: List<Anime>, private var mContext: Context, private val mAnimeViewModel: AnimeViewModel) : RecyclerView.Adapter<AnimeAdapter.ViewHolder>() {
+class AnimeAdapter(private val mList: List<Anime>, private var mContext: Context, private val mAnimeViewModel: AnimeViewModel, private val channels: List<Channel>) : RecyclerView.Adapter<AnimeAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.anime_view_design_list, parent, false)
@@ -56,12 +59,32 @@ class AnimeAdapter(private val mList: List<Anime>, private var mContext: Context
         }
 
         override fun onCreateContextMenu(menu: ContextMenu?, v: View?, menuInfo: ContextMenu.ContextMenuInfo?) {
-            menu!!.add(0, v!!.id, 1, R.string.item_remove).setOnMenuItemClickListener {
+            menu!!.add(0, v!!.id, 1, R.string.item_move).setOnMenuItemClickListener {
+                // Show dialog with channel selection
+                val builder = AlertDialog.Builder(mContext)
+                val channelNames = channels.map { it.name }
+
+                builder.setTitle(R.string.anime_move_title)
+                    .setItems(channelNames.toTypedArray()) { _, which ->
+                        // Move item
+                        item.channelId = channels[which].id
+                        mAnimeViewModel.update(item)
+
+                        // Show message
+                        Toast.makeText(mContext, mContext.getString(R.string.anime_move_message, channels[which].name), Toast.LENGTH_SHORT).show()
+                    }
+                    .setNegativeButton(R.string.cancel) { _, _ -> }
+
+                builder.show()
+                return@setOnMenuItemClickListener true
+            }
+            menu.add(0, v.id, 2, R.string.item_remove).setOnMenuItemClickListener {
                 mAnimeViewModel.delete(item)
 
                 Toast.makeText(mContext, R.string.item_removed, Toast.LENGTH_SHORT).show()
                 return@setOnMenuItemClickListener true
             }
+
         }
     }
 }

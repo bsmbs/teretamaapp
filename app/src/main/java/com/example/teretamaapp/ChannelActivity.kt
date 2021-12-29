@@ -77,7 +77,7 @@ class ChannelActivity : AppCompatActivity() {
                         emptyMessage.visibility = View.GONE
                     }
 
-                    adapter = AnimeAdapter(anime, this, animeViewModel)
+                    adapter = AnimeAdapter(anime, this, animeViewModel, channels)
                     list.adapter = adapter
 
                     val callback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
