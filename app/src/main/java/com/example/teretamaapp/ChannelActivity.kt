@@ -1,7 +1,9 @@
 package com.example.teretamaapp
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
@@ -10,13 +12,11 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.teretamaapp.room.AnimeViewModel
-import com.example.teretamaapp.room.AnimeViewModelFactory
-import com.example.teretamaapp.room.ChannelViewModel
-import com.example.teretamaapp.room.ChannelViewModelFactory
+import com.example.teretamaapp.room.*
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 val tabArray = arrayOf(
@@ -26,6 +26,8 @@ val tabArray = arrayOf(
 
 class ChannelActivity : AppCompatActivity() {
     lateinit var adapter: AnimeAdapter
+    lateinit var pref: SharedPreferences
+
     private var channelId: Int = -1
 
     private val animeViewModel: AnimeViewModel by viewModels {
@@ -46,10 +48,11 @@ class ChannelActivity : AppCompatActivity() {
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         toolbar.setNavigationIcon(R.drawable.ic_baseline_close_24)
 
+        pref = PreferenceManager.getDefaultSharedPreferences(this)
+
         setSupportActionBar(toolbar)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
 
         toolbar.setNavigationOnClickListener {
             onBackPressed()
@@ -57,6 +60,7 @@ class ChannelActivity : AppCompatActivity() {
 
         // add button
         handleAdd()
+        handleSort()
 
         val emptyMessage = findViewById<TextView>(R.id.anime_empty)
 
@@ -65,12 +69,16 @@ class ChannelActivity : AppCompatActivity() {
 
         list.layoutManager = LinearLayoutManager(this)
 
+        // Set current sort
+        animeViewModel.setSort(Sort.values()[pref.getInt("sort", Sort.DEFAULT.ordinal)])
+
         channelViewModel.channels.observe(this, { channels ->
             val channelEntry = channels.find { it.id == channelId }
             if (channelEntry != null) {
                 supportActionBar?.title = channelEntry.name
 
-                animeViewModel.getByChannel(channelId).observe(this, { anime ->
+                animeViewModel.setChannel(channelId)
+                animeViewModel.sortedAnime.observe(this, { anime ->
                     if (anime.isEmpty()) {
                         emptyMessage.visibility = View.VISIBLE
                     } else {
@@ -114,6 +122,39 @@ class ChannelActivity : AppCompatActivity() {
             intent.putExtra(CHANNEL_ID, channelId)
 
             act.launch(intent)
+        }
+    }
+
+    private fun handleSort() {
+        val fab = findViewById<FloatingActionButton>(R.id.anime_sort)
+
+        fab.setOnClickListener {
+            val currentSort = pref.getInt("sort", Sort.DEFAULT.ordinal)
+
+            // Show selection dialog
+            val builder = AlertDialog.Builder(this)
+
+            builder.setTitle(R.string.sort)
+                .setSingleChoiceItems(R.array.sort, currentSort) { dialog, which ->
+                    val newSort = Sort.values()[which]
+
+                    /*val newSort = when (which) {
+                        1 -> Sort.TITLE
+                        2 -> Sort.YEAR
+                        else -> Sort.DEFAULT
+                    }*/
+
+                    // Save to preferences
+                    pref.edit().putInt("sort", which).apply()
+
+                    // Apply changes to recycler
+                    animeViewModel.setSort(newSort)
+
+                    dialog.dismiss()
+                }
+                .setNegativeButton(R.string.cancel) { _, _ -> }
+
+            builder.show()
         }
     }
 }

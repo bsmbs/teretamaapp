@@ -40,7 +40,6 @@ class CustomAdapter(private val mList: List<Channel>, private var mContext: Cont
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val itemsViewModel = mList[position]
 
-        //holder.imageView.setImageResource(ItemsViewModel.image)
         holder.imageView.setImageResource(R.drawable.tokyo_mx)
         holder.imageView.setColorFilter(0xffffff)
 

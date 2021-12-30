@@ -3,10 +3,37 @@ package com.example.teretamaapp.room
 import androidx.lifecycle.*
 import kotlinx.coroutines.launch
 
-class AnimeViewModel(private val repository: AppRepository): ViewModel() {
-    val anime: LiveData<List<Anime>> = repository.anime.asLiveData()
+enum class Sort {
+    DEFAULT, TITLE, YEAR, TITLE_DESC, YEAR_DESC
+}
 
-    fun getByChannel(id: Int): LiveData<List<Anime>> = repository.getAnimeByChannel(id).asLiveData()
+class AnimeViewModel(private val repository: AppRepository): ViewModel() {
+    private val channelId = MutableLiveData<Int>()
+    private val sort = MutableLiveData<Sort>()
+
+    val anime: LiveData<List<Anime>> = Transformations.switchMap(channelId) {
+        channel -> repository.getAnimeByChannel(channel).asLiveData()
+    }
+
+    val sortedAnime: LiveData<List<Anime>> = Transformations.switchMap(anime) { anime ->
+        Transformations.map(sort) { sorting ->
+            when (sorting) {
+                Sort.TITLE -> anime.sortedBy { it.title }
+                Sort.YEAR -> anime.sortedBy { it.releaseYear }
+                Sort.TITLE_DESC -> anime.sortedBy { it.title }.reversed()
+                Sort.YEAR_DESC -> anime.sortedBy { it.releaseYear }.reversed()
+                else -> anime
+            }
+        }
+    }
+
+    fun setSort(newSort: Sort) {
+        sort.value = newSort
+    }
+
+    fun setChannel(id: Int) {
+        channelId.value = id
+    }
 
     fun insert(anime: Anime) = viewModelScope.launch {
         repository.insertAnime(anime)

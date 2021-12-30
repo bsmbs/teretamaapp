@@ -57,6 +57,7 @@
     <string name="anime_move_title">Move item to</string>
     <string name="anime_move_message">Successfully moved to %1$s</string>
     <string name="anime_cover">Anime cover</string>
+    <string name="sort">Sort</string>
     <string-array name="title_langs">
         <item>English (JoJo\'s Bizarre Adventure)</item>
         <item>Romaji (JoJo no Kimyou na Bouken)</item>
@@ -76,5 +77,10 @@
         <item>default</item>
         <item>light</item>
         <item>dark</item>
+    </string-array>
+    <string-array name="sort">
+        <item>Default</item>
+        <item>Title</item>
+        <item>Year</item>
     </string-array>
 </resources>
