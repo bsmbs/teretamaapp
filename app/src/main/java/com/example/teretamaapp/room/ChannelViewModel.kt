@@ -1,6 +1,7 @@
 package com.example.teretamaapp.room
 
 import androidx.lifecycle.*
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class ChannelViewModel(private val repository: AppRepository): ViewModel() {
@@ -12,6 +13,11 @@ class ChannelViewModel(private val repository: AppRepository): ViewModel() {
 
     fun update(channel: Channel) = viewModelScope.launch {
         repository.update(channel)
+    }
+
+    fun autoDelete(channel: Channel) = viewModelScope.launch {
+        repository.delete(channel)
+        repository.deleteAnimeFromChannel(channel.id)
     }
 
     fun delete(channel: Channel) = viewModelScope.launch {

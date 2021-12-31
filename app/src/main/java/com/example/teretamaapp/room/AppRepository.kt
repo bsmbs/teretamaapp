@@ -27,6 +27,11 @@ class AppRepository(private val channelDao: ChannelDao, private val animeDao: An
     }
 
     @WorkerThread
+    suspend fun deleteAnimeFromChannel(channelId: Int) {
+        animeDao.deleteFromChannel(channelId)
+    }
+
+    @WorkerThread
     suspend fun insertAll(vararg channels: Channel) {
         channelDao.insertAll(*channels)
     }

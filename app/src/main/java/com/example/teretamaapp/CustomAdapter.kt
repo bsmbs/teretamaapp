@@ -79,7 +79,7 @@ class CustomAdapter(private val mList: List<Channel>, private var mContext: Cont
             menu!!.add(0, v!!.id, 1, R.string.item_remove).setOnMenuItemClickListener {
                 // Delete it
                 if (entry != null) {
-                    mChannelViewModel.delete(entry)
+                    mChannelViewModel.autoDelete(entry)
                     try {
                         val uri = Uri.parse(entry.imageUri)
                         if (uri.scheme == "file") {

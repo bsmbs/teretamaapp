@@ -82,5 +82,7 @@
         <item>Default</item>
         <item>Title</item>
         <item>Year</item>
+        <item>Title (descending)</item>
+        <item>Year (descending)</item>
     </string-array>
 </resources>

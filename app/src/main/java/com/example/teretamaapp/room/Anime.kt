@@ -30,6 +30,9 @@ interface AnimeDao {
     @Update
     suspend fun update(anime: Anime)
 
+    @Query("DELETE FROM anime_table WHERE channelId=:id")
+    suspend fun deleteFromChannel(id: Int)
+
     @Delete
     suspend fun delete(anime: Anime)
 
